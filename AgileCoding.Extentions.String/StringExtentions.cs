@@ -6,33 +6,57 @@
 
     public static class StringExtentions
     {
-        public static void ThrowIfNotContains<TException>(this string data, string lookupString, string errorMessage = null)
+        public static void ThrowIfNotContains<TException>(this string data, string lookupString, string? errorMessage = null)
             where TException : Exception
         {
             errorMessage = errorMessage == null ? $"Unable to find '{lookupString}' in data" : errorMessage;
             if (!data.Contains(lookupString))
             {
-                throw (TException)Activator.CreateInstance(typeof(TException), errorMessage);
+                var exception = Activator.CreateInstance(typeof(TException), errorMessage) as TException;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unable to create exception of type '{typeof(TException).Name}'");
+                }
             }
         }
 
-        public static void ThrowIfContains<TException>(this string data, char character, string errorMessage = null)
+        public static void ThrowIfContains<TException>(this string data, char character, string? errorMessage = null)
             where TException : Exception
         {
             errorMessage = errorMessage == null ? $"Invalid character '{character}' found in data" : errorMessage;
             if (data.Contains(character))
             {
-                throw (TException)Activator.CreateInstance(typeof(TException), errorMessage);
+                var exception = Activator.CreateInstance(typeof(TException), errorMessage) as TException;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unable to create exception of type '{typeof(TException).Name}'");
+                }
             }
         }
 
-        public static void ThrowIfContainsCharacters<TException>(this string data, char[] chars, string errorMessage = null)
+        public static void ThrowIfContainsCharacters<TException>(this string data, char[] chars, string? errorMessage = null)
             where TException : Exception
         {
             errorMessage = errorMessage == null ? $"Characters '{string.Join(",", chars)}' not allowed in data" : errorMessage;
             if (data.Any(x => chars.ToList().Any(y => y == x)))
             {
-                throw (TException)Activator.CreateInstance(typeof(TException), errorMessage);
+                var exception = Activator.CreateInstance(typeof(TException), errorMessage) as TException;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unable to create exception of type '{typeof(TException).Name}'");
+                }
             }
         }
 
@@ -47,18 +71,34 @@
             return tempString;
         }
 
-        public static string ThrowIfIsNullOrEmpty<TNullExceptionType, TEmptyExcpetionType>(this string data, string stringNullErrorMessage = null, string stringEmptyErrorMessage = null)
+        public static string ThrowIfIsNullOrEmpty<TNullExceptionType, TEmptyExcpetionType>(this string data, string? stringNullErrorMessage = null, string? stringEmptyErrorMessage = null)
             where TNullExceptionType : Exception
             where TEmptyExcpetionType : Exception
         {
             if (data == null)
             {
-                throw (TNullExceptionType)Activator.CreateInstance(typeof(TNullExceptionType), stringNullErrorMessage);
+                var exception = Activator.CreateInstance(typeof(TNullExceptionType), stringNullErrorMessage) as TNullExceptionType;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unable to create exception of type '{typeof(TNullExceptionType).Name}'");
+                }
             }
 
             if (string.IsNullOrEmpty(data))
             {
-                throw (TEmptyExcpetionType)Activator.CreateInstance(typeof(TEmptyExcpetionType), stringEmptyErrorMessage);
+                var exception = Activator.CreateInstance(typeof(TEmptyExcpetionType), stringEmptyErrorMessage) as TEmptyExcpetionType;
+                if (exception != null)
+                {
+                    throw exception;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Unable to create exception of type '{typeof(TEmptyExcpetionType).Name}'");
+                }
             }
 
             return data;
@@ -80,7 +120,7 @@
             return result;
         }
 
-        public static string ToBase64(this string self, Encoding encoding = null)
+        public static string ToBase64(this string self, Encoding? encoding = null)
         {
             if (encoding == null)
             {
@@ -90,7 +130,7 @@
             return Convert.ToBase64String(self.ToBytes(encoding));
         }
 
-        public static byte[] FromBase64(this string self, Encoding encoding = null)
+        public static byte[] FromBase64(this string self, Encoding? encoding = null)
         {
             if (encoding == null)
             {
